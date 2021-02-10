@@ -2,28 +2,31 @@ import $ from 'jquery';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './css/styles.css';
+import WeatherService from './weather-service.js'
+
+function clearFields()  {
+  $("#location").val("");
+  $(".showErrors").text("");
+  $(".showHumdity").text("");
+  $(".showTemp").text("");
+}
+
+function getElements(response)  {
+  if(response.main) {
+    $(".showHumidity").text(`the humidity in ${city} is ${body.main.humidity}%`);
+    $(".showTemp").text(`The temperature in Kelvins is ${body.main.temp} degrees.`);
+  } else  {
+    $(".showErrors").text(`There was an error: ${response.message}`)
+  }
+}
 
 $(document).ready(function()  {
   $('#weatherLocation').click(function()  {
-    const city = $('#location').val();
-    $('#location').val("");
-
-    let request = new XMLHttpRequest();
-    const url = `http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${process.env.API_KEY}`;
-
-    request.onreadystatechange = function() {
-      if (this.readyState === 4 && this.staus === 200)  {
-        const response = JSON.parse(this.responseText);
-        getElements(response);
-      }
-    }
-
-    request.open("GET", url, true);
-    request.send();
-
-    function getElements(response)  {
-      $('.showHumidity').text(`The humidity in ${city} is ${response.main.humdity}%`);
-      $('.showTemp').text(`The temperature in Kelvins is ${response.main.temp} degrees.`);
-    }
+    let city = $('#location').val();
+    clearFields();
+    WeatherService.getWeather(city)
+      .then(function(response)  {
+        getElements(response)
+      });
   });
 });
