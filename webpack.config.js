@@ -17,7 +17,7 @@ module.exports = {
     new CleanWebpackPlugin(),
     new Dotenv(),
     new HtmlWebpackPlugin({
-      title: 'Shape Tracker',
+      title: 'Weather Tracker',
       template: './src/index.html',
       inject: 'body'
     })
